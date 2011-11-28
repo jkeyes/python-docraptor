@@ -55,3 +55,12 @@ class PDFTest(TestCase):
             ssl=True)
         assert not path.exists(TEST)
         assert path.exists(TEST_NAME)
+
+    def test_content_or_url_required(self):
+        try:
+            pdf(KEY,
+                'doc[test]': "true",
+                'doc[name]': "test"
+                )
+        except DocRaptorError, e:
+            assert e.message == "Must provide a document url or document content"

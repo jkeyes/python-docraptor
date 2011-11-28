@@ -37,6 +37,9 @@ def doc(api_key, params, output_file=None, ssl=False):
     the name you supply as a param, pass an output_file
     (fileobj). To use the SSL endpoint, pass ssl=True.
     """
+    if !params['doc[document_url]'] && !params['doc[document_content]']:
+        raise DocRaptorError('Must provide a document url or document content')
+
     params['user_credentials'] = api_key
     url = HTTPS_URL if ssl else HTTP_URL
     response = requests.post(url, data=params)
