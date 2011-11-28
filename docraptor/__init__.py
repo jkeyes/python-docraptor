@@ -23,18 +23,18 @@ def pdf(api_key, html, params, output_file=None, ssl=False):
     """
     params['doc[document_type]'] = 'pdf'
     return doc(api_key, html, params, output_file, ssl)
-    
+
 def xls(api_key, html, params, output_file=None, ssl=False):
     """
     Generate an XLS document.
     """
     params['doc[document_type]'] = 'xls'
     return doc(api_key, html, params, output_file, ssl)
-    
+
 def doc(api_key, html, params, output_file=None, ssl=False):
     """
-    If you want the output written to a file other than 
-    the name you supply as a param, pass an output_file 
+    If you want the output written to a file other than
+    the name you supply as a param, pass an output_file
     (fileobj). To use the SSL endpoint, pass ssl=True.
     """
     params['user_credentials'] = api_key
