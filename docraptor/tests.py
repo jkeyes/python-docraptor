@@ -28,18 +28,30 @@ class PDFTest(TestCase):
 
     def test_pdf(self):
         assert not path.exists(TEST)
-        pdf(KEY, "<html><body><h1>Test</h1></body></html>", { 'doc[test]': 'true', 'doc[name]': TEST})
+        pdf(KEY,
+            { 'doc[test]': 'true',
+              'doc[name]': TEST,
+              'doc[document_content]': "<html><body><h1>Test</h1></body></html>"})
         assert path.exists("test.pdf")
 
     def test_ssl(self):
         assert not path.exists(TEST)
-        pdf(KEY, "<html><body><h1>Test</h1></body></html>", { 'doc[test]': 'true', 'doc[name]': TEST}, ssl=True)
+        pdf(KEY,
+            { 'doc[test]': 'true',
+              'doc[name]': TEST,
+              'doc[document_content]':"<html><body><h1>Test</h1></body></html>"},
+            ssl=True)
         assert path.exists("test.pdf")
 
     def test_name(self):
         assert not path.exists(TEST)
         assert not path.exists(TEST_NAME)
         tnf = open("test_name.pdf", "w")
-        pdf(KEY, "<html><body><h1>Test</h1></body></html>", { 'doc[test]': 'true', 'doc[name]': "test.pdf"}, output_file=tnf, ssl=True)
+        pdf(KEY,
+            { 'doc[test]': 'true',
+              'doc[name]': "test.pdf",
+              'doc[document_content]':"<html><body><h1>Test</h1></body></html>"},
+            output_file=tnf,
+            ssl=True)
         assert not path.exists(TEST)
         assert path.exists(TEST_NAME)
