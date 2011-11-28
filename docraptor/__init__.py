@@ -17,28 +17,30 @@ class DocRaptorError(Exception):
     """
     pass
 
-def pdf(api_key, html, params, output_file=None, ssl=False):
+def pdf(api_key, params, output_file=None, ssl=False):
     """
     Generate a PDF document.
     """
     params['doc[document_type]'] = 'pdf'
     return doc(api_key, html, params, output_file, ssl)
-    
-def xls(api_key, html, params, output_file=None, ssl=False):
+
+def xls(api_key, params, output_file=None, ssl=False):
     """
     Generate an XLS document.
     """
     params['doc[document_type]'] = 'xls'
     return doc(api_key, html, params, output_file, ssl)
-    
-def doc(api_key, html, params, output_file=None, ssl=False):
+
+def doc(api_key, params, output_file=None, ssl=False):
     """
-    If you want the output written to a file other than 
-    the name you supply as a param, pass an output_file 
+    If you want the output written to a file other than
+    the name you supply as a param, pass an output_file
     (fileobj). To use the SSL endpoint, pass ssl=True.
     """
+    if !params['doc[document_url]'] && !params['doc[document_content]']:
+        raise DocRaptorError('Must provide a document url or document content')
+
     params['user_credentials'] = api_key
-    params['doc[document_content]'] = html
     url = HTTPS_URL if ssl else HTTP_URL
     response = requests.post(url, data=params)
 
