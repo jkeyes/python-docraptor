@@ -11,8 +11,11 @@ import requests
 from requests.auth import HTTPBasicAuth
 from datetime import datetime
 
+ENV = os.environ
+API_KEY = "DOCRAPTOR_API_KEY"
+URL = "DOCRATPOR_URL"
+
 # endpoint URLs
-HTTP_URL = 'http://docraptor.com/'
 HTTPS_URL = 'https://docraptor.com/'
 
 class NoApiKeyProvidedError(RuntimeError):
@@ -44,15 +47,16 @@ class DocumentDownloadFailure(DocRaptorRequestException):
 class DocRaptor(object):
 
     def __init__(self, api_key=None):
-        self.api_key = api_key if api_key is not None else os.environ.get('DOCRAPTOR_API_KEY', None)
+        self.api_key = ENV.get(API_KEY) if api_key is None else api_key
         if not self.api_key:
             raise NoApiKeyProvidedError("No API key provided")
+        self._url = ENV.get(URL, HTTPS_URL)
 
     def create(self, options=None):
         if options is None:
             raise ValueError("Please pass in an options dict")
-        if not (bool(options.get('document_content', False) or options.get('document_url', False))):
-
+        
+        if not _has_content(options):
             raise NoContentError("must supply 'document_content' or 'document_url'")
 
         default_options = {
@@ -69,15 +73,13 @@ class DocRaptor(object):
             query['output'] = 'json'
         doc_options = _format_keys({'doc': options})
         
-        url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.post('%sdocs' % (url), data=doc_options, params=query)
+        resp = requests.post('%sdocs' % (self._url), data=doc_options, params=query)
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentCreationFailure(resp.content, resp.status_code)
             
         if options['async']:
-            as_json = json.loads(resp.content)
-            self.status_id = as_json['status_id']
+            return json.loads(resp.content)
         else:
             return resp
         
@@ -93,8 +95,8 @@ class DocRaptor(object):
         }
         options = dict(default_options.items() + options.items())
         raise_exception_on_failure = options.pop('raise_exception_on_failure')
-        url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.get('%sdocs' % (url), params=options)
+
+        resp = requests.get('%sdocs' % (self._url), params=options)
         
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentListingFailure(resp.content, resp.status_code)
@@ -105,8 +107,9 @@ class DocRaptor(object):
             'output': 'json',
             'user_credentials': self.api_key 
         }
-        url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.get('%sstatus/%s' % (url, status_id), params=query)
+
+        resp = requests.get('%sstatus/%s' % (self._url, status_id), params=query)
+
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentStatusFailure(resp.content, resp.status_code)
 
@@ -122,12 +125,16 @@ class DocRaptor(object):
             'output': 'json',
             'user_credentials': self.api_key 
         }
-        url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.get('%sdownload/%s' % (url, download_key), params=query)
+        resp = requests.get('%sdownload/%s' % (self._url, download_key), params=query)
+
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentDownloadFailure(resp.content, resp.status_code)
         return resp
-        
+
+def _has_content(options):
+    content = options.get('document_content') or options.get('document_url')
+    return bool(content)
+
 def _format_keys(options, result=None, parent_key=None):
     if result is None:
         result = {}
