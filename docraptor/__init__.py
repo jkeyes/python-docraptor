@@ -143,17 +143,3 @@ def _format_keys(options, result=None, parent_key=None):
         else:
             result[key] = v
     return result
-
-if __name__ == "__main__":
-    docraptor = DocRaptor('Ba7ZA84mA9Ejmhrpde8a')
-    with open("jk_new.pdf", "wb") as f:
-        f.write(docraptor.create({ 'document_content': '<p>Test</p>', 'test': True, 'prince_options': { 'disallow_print': True }, 'raise_exception_on_failure': True }))
-
-    resp = docraptor.create({ 'document_content': '<p>Test</p>', 'test': True, 'prince_options': { 'disallow_print': True }, 'async': True })
-    try:
-        resp = docraptor.status(docraptor.status_id, True)
-        print resp
-    except Exception, e:
-        print e
-    resp = docraptor.list_docs({})
-    
