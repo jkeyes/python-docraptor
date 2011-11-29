@@ -15,8 +15,7 @@ setup(name="python-docraptor",
     url="http://github.com/jkeyes/python-docraptor",
     keywords='DocRaptor pdf python',
     classifiers=[],
-    package_dir={'': 'docraptor'},
-    packages=find_packages("docraptor"),
+    packages=find_packages(),
     include_package_data=True,
     install_requires=["requests"]
 )
