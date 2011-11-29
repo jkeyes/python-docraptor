@@ -106,14 +106,14 @@ class DocRaptor(object):
             'user_credentials': self.api_key 
         }
         url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.get('%sstatus/#%s' % (url, status_id), params=query)
+        resp = requests.get('%sstatus/%s' % (url, status_id), params=query)
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentStatusFailure(resp.content, resp.status_code)
 
         if resp.status_code == 200:
-            as_json = json.loads(resp.content) #'{ "status": "completed", "download_url": "/blah/download/jkskskdldkd/" }') #resp.content)
+            as_json = json.loads(resp.content)
             if as_json['status'] == 'completed':
-                as_json['download_key'] = re.match('/.*?\/download\/(.+)/', as_json['download_url']).groups()[0]
+                as_json['download_key'] = re.match('.*?\/download\/(.+)', as_json['download_url']).groups()[0]
             return as_json
         return resp
         
@@ -123,7 +123,7 @@ class DocRaptor(object):
             'user_credentials': self.api_key 
         }
         url = os.environ.get("DOCRAPTOR_URL", HTTPS_URL)
-        resp = requests.get('%s/download/%s' % (url, download_key), params=query)
+        resp = requests.get('%sdownload/%s' % (url, download_key), params=query)
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentDownloadFailure(resp.content, resp.status_code)
         return resp
