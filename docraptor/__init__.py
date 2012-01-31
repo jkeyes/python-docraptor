@@ -14,6 +14,8 @@ from datetime import datetime
 ENV = os.environ
 API_KEY = "DOCRAPTOR_API_KEY"
 URL = "DOCRAPTOR_URL"
+DEFAULT_TIMEOUT = 10 #seconds
+TIMEOUT = "DOCRAPTOR_TIMEOUT"
 
 # endpoint URLs
 HTTPS_URL = 'https://docraptor.com/'
@@ -51,6 +53,7 @@ class DocRaptor(object):
         if not self.api_key:
             raise NoApiKeyProvidedError("No API key provided")
         self._url = ENV.get(URL, HTTPS_URL)
+        self._timeout = float(ENV.get(TIMEOUT, DEFAULT_TIMEOUT))
 
     def create(self, options=None):
         if options is None:
@@ -73,7 +76,7 @@ class DocRaptor(object):
             query['output'] = 'json'
         doc_options = _format_keys({'doc': options})
         
-        resp = requests.post('%sdocs' % (self._url), data=doc_options, params=query)
+        resp = requests.post('%sdocs' % (self._url), data=doc_options, params=query, timeout=self._timeout)
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentCreationFailure(resp.content, resp.status_code)
@@ -96,7 +99,7 @@ class DocRaptor(object):
         options = dict(default_options.items() + options.items())
         raise_exception_on_failure = options.pop('raise_exception_on_failure')
 
-        resp = requests.get('%sdocs' % (self._url), params=options)
+        resp = requests.get('%sdocs' % (self._url), params=options, timeout=self._timeout)
         
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentListingFailure(resp.content, resp.status_code)
@@ -108,7 +111,7 @@ class DocRaptor(object):
             'user_credentials': self.api_key 
         }
 
-        resp = requests.get('%sstatus/%s' % (self._url, status_id), params=query)
+        resp = requests.get('%sstatus/%s' % (self._url, status_id), params=query, timeout=self._timeout)
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentStatusFailure(resp.content, resp.status_code)
@@ -125,7 +128,7 @@ class DocRaptor(object):
             'output': 'json',
             'user_credentials': self.api_key 
         }
-        resp = requests.get('%sdownload/%s' % (self._url, download_key), params=query)
+        resp = requests.get('%sdownload/%s' % (self._url, download_key), params=query, timeout=self._timeout)
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentDownloadFailure(resp.content, resp.status_code)
