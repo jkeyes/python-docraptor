@@ -13,7 +13,7 @@ from datetime import datetime
 
 ENV = os.environ
 API_KEY = "DOCRAPTOR_API_KEY"
-URL = "DOCRATPOR_URL"
+URL = "DOCRAPTOR_URL"
 
 # endpoint URLs
 HTTPS_URL = 'https://docraptor.com/'
