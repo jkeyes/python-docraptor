@@ -2,8 +2,7 @@
 # Copyright (C) 2011 John Keyes
 # http://jkeyes.mit-license.org/
 
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name="python-docraptor",
     version='1.0',
@@ -15,6 +14,7 @@ setup(name="python-docraptor",
     url="http://github.com/jkeyes/python-docraptor",
     keywords='DocRaptor pdf python',
     classifiers=[],
+    use_2to3=True,
     packages=find_packages(),
     include_package_data=True,
     install_requires=["requests"]
