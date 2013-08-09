@@ -99,6 +99,12 @@ class DocRaptorCreateTest(TestCase):
     @raises(NoContentError)
     def test_blank_url(self):
         DocRaptor(self.test_key).create({'url': ''})
+
+    @raises(requests.exceptions.Timeout)
+    def test_timeout(self):
+        os.environ['DOCRAPTOR_TIMEOUT'] = '0.0001'
+        resp = DocRaptor(self.test_key).create({'document_content': "<html><body>Hey</body></html>" })
+
     
 class DocRaptorDocumentContentTest(TestCase):
     def setUp(self):
