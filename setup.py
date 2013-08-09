@@ -6,7 +6,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(name="python-docraptor",
-    version='1.0',
+    version='1.1',
     description="Doc Raptor API wrapper",
     long_description=open('README.md').read(),
     author="John Keyes",

@@ -24,7 +24,7 @@ class NoApiKeyProvidedError(RuntimeError):
 class NoContentError(KeyError):
     pass
 
-class DocRaptorRequestException(StandardError):
+class DocRaptorRequestException(Exception):
     def __init__(self, message, status_code):
         super(DocRaptorRequestException, self).__init__(message)
         self.status_code = status_code
@@ -66,7 +66,7 @@ class DocRaptor(object):
             'async': False,
             'raise_exception_on_failure': False
         }
-        options = dict(default_options.items() + options.items())
+        options = dict(list(default_options.items()) + list(options.items()))
         raise_exception_on_failure = options.pop('raise_exception_on_failure')
         query = { 'user_credentials': self.api_key }
         if options['async']:
@@ -93,7 +93,7 @@ class DocRaptor(object):
             'raise_exception_on_failure': False,
             'user_credentials': self.api_key
         }
-        options = dict(default_options.items() + options.items())
+        options = dict(list(default_options.items()) + list(options.items()))
         raise_exception_on_failure = options.pop('raise_exception_on_failure')
 
         resp = requests.get('%sdocs' % (self._url), params=options)
@@ -138,7 +138,7 @@ def _has_content(options):
 def _format_keys(options, result=None, parent_key=None):
     if result is None:
         result = {}
-    for k, v in options.items():
+    for k, v in list(options.items()):
         if parent_key:
             key = '%s[%s]' % (parent_key, k)
         else:

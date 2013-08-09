@@ -31,7 +31,13 @@ class MockResponse(object):
 def stub_http_response_with(filename, method=None, status=None):
     if status is None:
         status = 200
-    content = open(os.path.join(DIRPATH, 'fixtures', filename), "r").read()
+    try:
+        # python 2
+        content = open(os.path.join(DIRPATH, 'fixtures', filename), "r").read()
+    except UnicodeDecodeError:
+        # python 3
+        content = open(os.path.join(DIRPATH, 'fixtures', filename), "r",
+            encoding="latin-1").read()
     FIXTURES[filename] = content
     def stubbed(*args, **kwargs):
         resp = MockResponse()
