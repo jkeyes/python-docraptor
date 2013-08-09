@@ -34,3 +34,7 @@ A wrapper for the Doc Raptor API.
     
     with open("test_async.pdf", "wb") as f:
         f.write(docraptor.download(resp['download_key']).content)
+
+# Build Status
+
+[![Build Status](https://travis-ci.org/jkeyes/python-docraptor.png?branch=master)](https://travis-ci.org/jkeyes/python-docraptor)
