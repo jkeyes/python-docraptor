@@ -82,7 +82,7 @@ class DocRaptor(object):
             raise DocumentCreationFailure(resp.content, resp.status_code)
             
         if options['async']:
-            return json.loads(resp.content)
+            return json.loads(resp.content.decode("utf-8"))
         else:
             return resp
         
@@ -117,7 +117,7 @@ class DocRaptor(object):
             raise DocumentStatusFailure(resp.content, resp.status_code)
 
         if resp.status_code == 200:
-            as_json = json.loads(resp.content)
+            as_json = json.loads(resp.content.decode("utf-8"))
             if as_json['status'] == 'completed':
                 as_json['download_key'] = re.match('.*?\/download\/(.+)', as_json['download_url']).groups()[0]
             return as_json
