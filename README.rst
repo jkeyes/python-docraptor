@@ -1,8 +1,16 @@
-# python-docraptor
+python-docraptor
+================
 
-A wrapper for the Doc Raptor API.
+.. image:: https://travis-ci.org/jkeyes/python-docraptor.png?branch=master
+    :target: https://travis-ci.org/jkeyes/python-docraptor
 
-# Example
+
+python-docraptor is an MIT Licensed wrapper for the docraptor API.
+
+Synchronous Example
+-------------------
+
+.. code-block:: pycon
 
     from docraptor import DocRaptor
 
@@ -13,7 +21,10 @@ A wrapper for the Doc Raptor API.
             'test': True
         }).content)
 
-# Async Example
+Asynchronous Example
+--------------------
+
+.. code-block:: pycon
 
     import time
     from docraptor import DocRaptor
@@ -35,6 +46,13 @@ A wrapper for the Doc Raptor API.
     with open("test_async.pdf", "wb") as f:
         f.write(docraptor.download(resp['download_key']).content)
 
-# Build Status
 
-[![Build Status](https://travis-ci.org/jkeyes/python-docraptor.png?branch=master)](https://travis-ci.org/jkeyes/python-docraptor)
+Installation
+------------
+
+To install python-docraptor, simply:
+
+.. code-block:: bash
+
+    $ pip install python-docraptor
+
