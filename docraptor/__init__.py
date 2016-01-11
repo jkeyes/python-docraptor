@@ -14,7 +14,7 @@ from datetime import datetime
 ENV = os.environ
 API_KEY = "DOCRAPTOR_API_KEY"
 URL = "DOCRAPTOR_URL"
-DEFAULT_TIMEOUT = 10 #seconds
+DEFAULT_TIMEOUT = 90 #seconds
 TIMEOUT = "DOCRAPTOR_TIMEOUT"
 
 # endpoint URLs
