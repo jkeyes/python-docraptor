@@ -3,6 +3,11 @@
 History
 -------
 
+1.2.2 (2016-01-11)
+++++++++++++++++++
+
+- Increase default timeout to 90 seconds (@jamespaden)
+
 1.2.1 (2013-08-12)
 ++++++++++++++++++
 
