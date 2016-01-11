@@ -11,3 +11,4 @@ Patches and Suggestions
 ```````````````````````
 
 - Jesse Heitler <dev@i-iterate.com>
+- James Paden <james@expectedbehavior.com>
