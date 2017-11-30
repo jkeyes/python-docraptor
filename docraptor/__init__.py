@@ -31,6 +31,7 @@ class NoContentError(KeyError):
 class DocRaptorRequestException(Exception):
     def __init__(self, message, status_code):
         super(DocRaptorRequestException, self).__init__(message)
+        self.message = message
         self.status_code = status_code
 
     def __str__(self):
