@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name="python-docraptor",
-    version='1.2.2',
+    version='1.2.3',
     description="Doc Raptor API wrapper",
     long_description=open('README.rst').read(),
     author="John Keyes",
