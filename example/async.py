@@ -9,16 +9,16 @@ resp = docraptor.create({
     'test': True,
     'async': True
 })
-print(f"Status ID: {resp['status_id']}")
+print("Status ID: {status_id}".format(status_id=resp["status_id"]))
 
 status_id = resp['status_id']
 resp = docraptor.status(status_id)
 
-print(f"    {resp['status']}")
+print("    {status}".format(status=resp["status"]))
 while resp['status'] != 'completed':
     time.sleep(3)
     resp = docraptor.status(status_id)
-    print(f"    {resp['status']}")
+    print("    {status}".format(status=resp["status"]))
 
 print("Download to test_async.pdf")
 with open("test_async.pdf", "wb") as f:
