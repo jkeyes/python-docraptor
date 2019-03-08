@@ -85,13 +85,9 @@ class DocRaptor(object):
         query = {"user_credentials": self.api_key}
         if options["async"]:
             query["output"] = "json"
-        doc_options = _format_keys({"doc": options})
 
         resp = requests.post(
-            "%sdocs" % (self._url),
-            data=doc_options,
-            params=query,
-            timeout=self._timeout,
+            "%sdocs" % (self._url), json=options, params=query, timeout=self._timeout
         )
 
         if raise_exception_on_failure and resp.status_code != 200:
@@ -162,22 +158,3 @@ class DocRaptor(object):
 def _has_content(options):
     content = options.get("document_content") or options.get("document_url")
     return bool(content)
-
-
-def _format_keys(options, result=None, parent_key=None):
-    if result is None:
-        result = {}
-    for k, v in list(options.items()):
-        if parent_key:
-            key = "%s[%s]" % (parent_key, k)
-        else:
-            key = k
-        if isinstance(v, dict):
-            _format_keys(v, result, key)
-        elif v is False:
-            result[key] = "false"
-        elif v is True:
-            result[key] = "true"
-        else:
-            result[key] = v
-    return result
