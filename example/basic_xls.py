@@ -14,8 +14,8 @@ docraptor = DocRaptor()
 
 print("Create test_basic.xls")
 with open("test_basic.xls", "wb") as f:
-    f.write(docraptor.create({
-        'document_content': table,
-        'document_type': 'xls',
-        'test': True
-    }).content)
+    f.write(
+        docraptor.create(
+            {"document_content": table, "document_type": "xls", "test": True}
+        ).content
+    )

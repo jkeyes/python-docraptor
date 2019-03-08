@@ -36,11 +36,13 @@ def stub_http_response_with(filename, method=None, status=None):
         status = 200
     try:
         # python 2
-        with open(os.path.join(DIRPATH, 'fixtures', filename), "r") as f:
+        with open(os.path.join(DIRPATH, "fixtures", filename), "r") as f:
             content = f.read()
     except UnicodeDecodeError:
         # python 3
-        with open(os.path.join(DIRPATH, 'fixtures', filename), "r", encoding="latin-1") as f:
+        with open(
+            os.path.join(DIRPATH, "fixtures", filename), "r", encoding="latin-1"
+        ) as f:
             content = f.read()
     FIXTURES[filename] = content
 
@@ -49,13 +51,13 @@ def stub_http_response_with(filename, method=None, status=None):
         resp.status_code = status
         resp.content = content
         return resp
+
     setattr(requests, method, stubbed)
 
 
 class DocRaptorApiKeyTest(TestCase):
-
     def setUp(self):
-        os.environ.pop('DOCRAPTOR_API_KEY', None)
+        os.environ.pop("DOCRAPTOR_API_KEY", None)
         self.test_key = "test key"
 
     @raises(NoApiKeyProvidedError)
@@ -63,15 +65,15 @@ class DocRaptorApiKeyTest(TestCase):
         docraptor = DocRaptor()
 
     def test_env_api_key(self):
-        os.environ['DOCRAPTOR_API_KEY'] = self.test_key
+        os.environ["DOCRAPTOR_API_KEY"] = self.test_key
         docraptor = DocRaptor()
         assert docraptor.api_key == self.test_key
 
     def test_no_overwrite_env_api_key(self):
-        os.environ['DOCRAPTOR_API_KEY'] = self.test_key
+        os.environ["DOCRAPTOR_API_KEY"] = self.test_key
         docraptor = DocRaptor()
 
-        os.environ['DOCRAPTOR_API_KEY'] = "blah"
+        os.environ["DOCRAPTOR_API_KEY"] = "blah"
         assert docraptor.api_key == self.test_key
 
     def test_param_api_keys(self):
@@ -97,20 +99,22 @@ class DocRaptorCreateTest(TestCase):
 
     @raises(NoContentError)
     def test_no_content_attr(self):
-        DocRaptor(self.test_key).create({'herped': 'the_derp'})
+        DocRaptor(self.test_key).create({"herped": "the_derp"})
 
     @raises(NoContentError)
     def test_blank_content(self):
-        DocRaptor(self.test_key).create({ 'content': ''})
+        DocRaptor(self.test_key).create({"content": ""})
 
     @raises(NoContentError)
     def test_blank_url(self):
-        DocRaptor(self.test_key).create({'url': ''})
+        DocRaptor(self.test_key).create({"url": ""})
 
     @raises(requests.exceptions.Timeout)
     def test_timeout(self):
-        os.environ['DOCRAPTOR_TIMEOUT'] = '0.0001'
-        resp = DocRaptor(self.test_key).create({'document_content': "<html><body>Hey</body></html>" })
+        os.environ["DOCRAPTOR_TIMEOUT"] = "0.0001"
+        resp = DocRaptor(self.test_key).create(
+            {"document_content": "<html><body>Hey</body></html>"}
+        )
 
 
 class DocRaptorDocumentContentTest(TestCase):
@@ -121,7 +125,7 @@ class DocRaptorDocumentContentTest(TestCase):
     def test_create_with_invalid_content(self):
         invalid_html = "<herp"
         stub_http_response_with("invalid_pdf", "post", 422)
-        resp = DocRaptor(self.test_key).create({'document_content': invalid_html })
+        resp = DocRaptor(self.test_key).create({"document_content": invalid_html})
         assert FIXTURES["invalid_pdf"] == resp.content
         assert 422 == resp.status_code
 
@@ -129,11 +133,13 @@ class DocRaptorDocumentContentTest(TestCase):
     def test_create_with_invalid_content_raises(self):
         invalid_html = "<herp"
         stub_http_response_with("invalid_pdf", "post", 422)
-        resp = DocRaptor(self.test_key).create({'document_content': invalid_html, 'raise_exception_on_failure': True })
+        resp = DocRaptor(self.test_key).create(
+            {"document_content": invalid_html, "raise_exception_on_failure": True}
+        )
 
     def test_create_with_valid_content(self):
         stub_http_response_with("simple_pdf", "post")
-        resp = DocRaptor(self.test_key).create({'document_content': self.html_content })
+        resp = DocRaptor(self.test_key).create({"document_content": self.html_content})
         assert FIXTURES["simple_pdf"] == resp.content
         assert 200 == resp.status_code
 
@@ -153,7 +159,7 @@ class DocRaptorListDocsTest(TestCase):
     @raises(DocumentListingFailure)
     def test_invalid_list_docs_raises(self):
         stub_http_response_with("invalid_list_docs", "get", 400)
-        resp = DocRaptor(self.test_key).list_docs({'raise_exception_on_failure': True})
+        resp = DocRaptor(self.test_key).list_docs({"raise_exception_on_failure": True})
 
     def test_list_docs(self):
         stub_http_response_with("simple_list_docs", "get")
@@ -180,7 +186,7 @@ class DocRaptorStatusTest(TestCase):
         stub_http_response_with("simple_status", "get")
         app = DocRaptor(self.test_key)
         resp = app.status("test-id")
-        assert "completed" == resp['status']
+        assert "completed" == resp["status"]
         key = app._get_download_key(resp["download_url"])
         assert "ffffffffffd74b4a993fcae917699ed7" == key
 
