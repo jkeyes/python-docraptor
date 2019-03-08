@@ -17,7 +17,7 @@ DEFAULT_TIMEOUT = 90  # seconds
 TIMEOUT = "DOCRAPTOR_TIMEOUT"
 
 # endpoint URLs
-HTTPS_URL = 'https://docraptor.com/'
+HTTPS_URL = "https://docraptor.com/"
 
 
 class NoApiKeyProvidedError(RuntimeError):
@@ -36,7 +36,10 @@ class DocRaptorRequestException(Exception):
 
     def __str__(self):
         return "%s\nHTTP Status: %s\nReturned: %s" % (
-            self.__class__.__name__, self.status_code, self.message)
+            self.__class__.__name__,
+            self.status_code,
+            self.message,
+        )
 
 
 class DocumentCreationFailure(DocRaptorRequestException):
@@ -56,7 +59,6 @@ class DocumentDownloadFailure(DocRaptorRequestException):
 
 
 class DocRaptor(object):
-
     def __init__(self, api_key=None):
         self.api_key = ENV.get(API_KEY) if api_key is None else api_key
         if not self.api_key:
@@ -69,31 +71,33 @@ class DocRaptor(object):
             raise ValueError("Please pass in an options dict")
 
         if not _has_content(options):
-            raise NoContentError(
-                "must supply 'document_content' or 'document_url'")
+            raise NoContentError("must supply 'document_content' or 'document_url'")
 
         default_options = {
-            'name': 'default',
-            'document_type': 'pdf',
-            'test': False,
-            'async': False,
-            'raise_exception_on_failure': False
+            "name": "default",
+            "document_type": "pdf",
+            "test": False,
+            "async": False,
+            "raise_exception_on_failure": False,
         }
         options = dict(list(default_options.items()) + list(options.items()))
-        raise_exception_on_failure = options.pop('raise_exception_on_failure')
-        query = {'user_credentials': self.api_key}
-        if options['async']:
-            query['output'] = 'json'
-        doc_options = _format_keys({'doc': options})
+        raise_exception_on_failure = options.pop("raise_exception_on_failure")
+        query = {"user_credentials": self.api_key}
+        if options["async"]:
+            query["output"] = "json"
+        doc_options = _format_keys({"doc": options})
 
         resp = requests.post(
-            '%sdocs' % (self._url), data=doc_options, params=query,
-            timeout=self._timeout)
+            "%sdocs" % (self._url),
+            data=doc_options,
+            params=query,
+            timeout=self._timeout,
+        )
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentCreationFailure(resp.content, resp.status_code)
 
-        if options['async']:
+        if options["async"]:
             return json.loads(resp.content.decode("utf-8"))
         else:
             return resp
@@ -103,53 +107,52 @@ class DocRaptor(object):
             raise ValueError("Please pass in an options dict")
 
         default_options = {
-            'page': 1,
-            'per_page': 100,
-            'raise_exception_on_failure': False,
-            'user_credentials': self.api_key
+            "page": 1,
+            "per_page": 100,
+            "raise_exception_on_failure": False,
+            "user_credentials": self.api_key,
         }
         options = dict(list(default_options.items()) + list(options.items()))
-        raise_exception_on_failure = options.pop('raise_exception_on_failure')
+        raise_exception_on_failure = options.pop("raise_exception_on_failure")
 
         resp = requests.get(
-            '%sdocs' % (self._url), params=options, timeout=self._timeout)
+            "%sdocs" % (self._url), params=options, timeout=self._timeout
+        )
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentListingFailure(resp.content, resp.status_code)
         return resp
 
     def status(self, status_id, raise_exception_on_failure=False):
-        query = {
-            'output': 'json',
-            'user_credentials': self.api_key
-        }
+        query = {"output": "json", "user_credentials": self.api_key}
 
         resp = requests.get(
-            '%sstatus/%s' % (self._url, status_id), params=query,
-            timeout=self._timeout)
+            "%sstatus/%s" % (self._url, status_id), params=query, timeout=self._timeout
+        )
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentStatusFailure(resp.content, resp.status_code)
 
         if resp.status_code == 200:
             as_json = json.loads(resp.content)
-            if as_json['status'] == 'completed':
-                as_json['download_key'] = self._get_download_key(as_json['download_url'])
+            if as_json["status"] == "completed":
+                as_json["download_key"] = self._get_download_key(
+                    as_json["download_url"]
+                )
             return as_json
         return resp
 
     def _get_download_key(self, download_url):
-        match = re.match('.*?/download/(.+)', download_url)
+        match = re.match(".*?/download/(.+)", download_url)
         return match.groups()[0]
 
     def download(self, download_key, raise_exception_on_failure=False):
-        query = {
-            'output': 'json',
-            'user_credentials': self.api_key
-        }
+        query = {"output": "json", "user_credentials": self.api_key}
         resp = requests.get(
-            '%sdownload/%s' % (self._url, download_key), params=query,
-            timeout=self._timeout)
+            "%sdownload/%s" % (self._url, download_key),
+            params=query,
+            timeout=self._timeout,
+        )
 
         if raise_exception_on_failure and resp.status_code != 200:
             raise DocumentDownloadFailure(resp.content, resp.status_code)
@@ -157,7 +160,7 @@ class DocRaptor(object):
 
 
 def _has_content(options):
-    content = options.get('document_content') or options.get('document_url')
+    content = options.get("document_content") or options.get("document_url")
     return bool(content)
 
 
@@ -166,15 +169,15 @@ def _format_keys(options, result=None, parent_key=None):
         result = {}
     for k, v in list(options.items()):
         if parent_key:
-            key = '%s[%s]' % (parent_key, k)
+            key = "%s[%s]" % (parent_key, k)
         else:
             key = k
         if isinstance(v, dict):
             _format_keys(v, result, key)
         elif v is False:
-            result[key] = 'false'
+            result[key] = "false"
         elif v is True:
-            result[key] = 'true'
+            result[key] = "true"
         else:
             result[key] = v
     return result
