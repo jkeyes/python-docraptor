@@ -5,11 +5,14 @@
 from setuptools import find_packages
 from setuptools import setup
 
+with open('README.rst') as f:
+    long_description = f.read()
+
 setup(
     name="python-docraptor",
     version='1.2.3',
     description="Doc Raptor API wrapper",
-    long_description=open('README.rst').read(),
+    long_description=long_description.read(),
     author="John Keyes",
     author_email="john@keyes.ie",
     license="MIT License",
