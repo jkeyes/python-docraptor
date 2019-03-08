@@ -132,13 +132,15 @@ class DocRaptor(object):
             raise DocumentStatusFailure(resp.content, resp.status_code)
 
         if resp.status_code == 200:
-            as_json = json.loads(resp.content.decode("utf-8"))
+            as_json = json.loads(resp.content)
             if as_json['status'] == 'completed':
-                match = re.match(
-                    '.*?\/download\/(.+)', as_json['download_url'])
-                as_json['download_key'] = match.groups()[0]
+                as_json['download_key'] = self._get_download_key(as_json['download_url'])
             return as_json
         return resp
+
+    def _get_download_key(self, download_url):
+        match = re.match('.*?/download/(.+)', download_url)
+        return match.groups()[0]
 
     def download(self, download_key, raise_exception_on_failure=False):
         query = {

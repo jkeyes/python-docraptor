@@ -176,10 +176,13 @@ class DocRaptorStatusTest(TestCase):
         stub_http_response_with("invalid_status", "get", 400)
         resp = DocRaptor(self.test_key).status("test-id", True)
 
-    def atest_status(self):
+    def test_status(self):
         stub_http_response_with("simple_status", "get")
-        resp = DocRaptor(self.test_key).status("test-id")
+        app = DocRaptor(self.test_key)
+        resp = app.status("test-id")
         assert "completed" == resp['status']
+        key = app._get_download_key(resp["download_url"])
+        assert "ffffffffffd74b4a993fcae917699ed7" == key
 
 
 class DocRaptorDownloadTest(TestCase):
