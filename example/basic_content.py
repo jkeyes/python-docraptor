@@ -1,6 +1,9 @@
+"""Generate a PDF using the DocRaptor content style."""
 from docraptor import DocRaptor
 
-if __name__ == "__main__":
+
+def main():
+    """Generate a PDF with specified content."""
     docraptor = DocRaptor()
 
     print("Create test_basic_content.pdf")
@@ -13,3 +16,7 @@ if __name__ == "__main__":
                 }
             ).content
         )
+
+
+if __name__ == "__main__":
+    main()

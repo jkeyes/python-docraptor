@@ -1,7 +1,10 @@
+"""Generate a PDF using the DocRaptor async style."""
 import time
 from docraptor import DocRaptor
 
-if __name__ == "__main__":
+
+def main():
+    """Generate a PDF using the async method."""
     docraptor = DocRaptor()
 
     print("Create PDF")
@@ -27,3 +30,7 @@ if __name__ == "__main__":
     with open("test_async.pdf", "wb") as f:
         f.write(docraptor.download(resp["download_key"]).content)
     print("[DONE]")
+
+
+if __name__ == "__main__":
+    main()

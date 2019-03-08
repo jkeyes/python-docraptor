@@ -1,6 +1,9 @@
+"""Generate an XLS using the DocRaptor content style."""
 from docraptor import DocRaptor
 
-if __name__ == "__main__":
+
+def main():
+    """Generate an XLS with specified content."""
     table = """<table>
     <thead>
     <tr><th>First Name</th><th>Last Name</th></tr>
@@ -20,3 +23,7 @@ if __name__ == "__main__":
                 {"document_content": table, "document_type": "xls", "test": True}
             ).content
         )
+
+
+if __name__ == "__main__":
+    main()
