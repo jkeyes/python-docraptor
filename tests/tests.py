@@ -20,31 +20,37 @@ FILES = [TEST, TEST_NAME]
 DIRPATH = os.path.dirname(__file__)
 FIXTURES = {}
 
+
 def _clean():
     for fname in FILES:
         if path.exists(fname):
             os.unlink(fname)
 
+
 class MockResponse(object):
     pass
+
 
 def stub_http_response_with(filename, method=None, status=None):
     if status is None:
         status = 200
     try:
         # python 2
-        content = open(os.path.join(DIRPATH, 'fixtures', filename), "r").read()
+        with open(os.path.join(DIRPATH, 'fixtures', filename), "r") as f:
+            content = f.read()
     except UnicodeDecodeError:
         # python 3
-        content = open(os.path.join(DIRPATH, 'fixtures', filename), "r",
-            encoding="latin-1").read()
+        with open(os.path.join(DIRPATH, 'fixtures', filename), "r", encoding="latin-1") as f:
+            content = f.read()
     FIXTURES[filename] = content
+
     def stubbed(*args, **kwargs):
         resp = MockResponse()
         resp.status_code = status
         resp.content = content
         return resp
     setattr(requests, method, stubbed)
+
 
 class DocRaptorApiKeyTest(TestCase):
 
@@ -71,6 +77,7 @@ class DocRaptorApiKeyTest(TestCase):
     def test_param_api_keys(self):
         docraptor = DocRaptor(self.test_key)
         assert docraptor.api_key == self.test_key
+
 
 class DocRaptorCreateTest(TestCase):
     def setUp(self):
@@ -105,7 +112,7 @@ class DocRaptorCreateTest(TestCase):
         os.environ['DOCRAPTOR_TIMEOUT'] = '0.0001'
         resp = DocRaptor(self.test_key).create({'document_content': "<html><body>Hey</body></html>" })
 
-    
+
 class DocRaptorDocumentContentTest(TestCase):
     def setUp(self):
         self.test_key = "test key"
@@ -130,6 +137,7 @@ class DocRaptorDocumentContentTest(TestCase):
         assert FIXTURES["simple_pdf"] == resp.content
         assert 200 == resp.status_code
 
+
 class DocRaptorListDocsTest(TestCase):
     def setUp(self):
         self.test_key = "test key"
@@ -152,6 +160,7 @@ class DocRaptorListDocsTest(TestCase):
         resp = DocRaptor(self.test_key).list_docs({})
         assert FIXTURES["simple_list_docs"] == resp.content
 
+
 class DocRaptorStatusTest(TestCase):
     def setUp(self):
         self.test_key = "test key"
@@ -172,6 +181,7 @@ class DocRaptorStatusTest(TestCase):
         resp = DocRaptor(self.test_key).status("test-id")
         assert "completed" == resp['status']
 
+
 class DocRaptorDownloadTest(TestCase):
     def setUp(self):
         self.test_key = "test key"
@@ -186,7 +196,7 @@ class DocRaptorDownloadTest(TestCase):
     def test_invalid_download_raises(self):
         stub_http_response_with("invalid_download", "get", 400)
         resp = DocRaptor(self.test_key).download("test-id", True)
-        
+
     def test_download(self):
         stub_http_response_with("simple_download", "get")
         resp = DocRaptor(self.test_key).download("test-id")

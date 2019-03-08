@@ -1,4 +1,3 @@
-import time
 from docraptor import DocRaptor
 
 table = """<table>
@@ -13,10 +12,10 @@ table = """<table>
 </table>"""
 docraptor = DocRaptor()
 
-print "Create test_basic.xls"
+print("Create test_basic.xls")
 with open("test_basic.xls", "wb") as f:
     f.write(docraptor.create({
-        'document_content': table, 
+        'document_content': table,
         'document_type': 'xls',
         'test': True
     }).content)
