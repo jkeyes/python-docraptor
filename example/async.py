@@ -27,8 +27,8 @@ def main():
         print("    {status}".format(status=resp["status"]))
 
     print("Download to test_async.pdf")
-    with open("test_async.pdf", "wb") as f:
-        f.write(docraptor.download(resp["download_key"]).content)
+    with open("test_async.pdf", "wb") as pdf_file:
+        pdf_file.write(docraptor.download(resp["download_key"]).content)
     print("[DONE]")
 
 
