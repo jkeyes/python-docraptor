@@ -1,9 +1,7 @@
+"""Wrapper for DocRaptor Document API."""
 # Copyright (C) 2011 John Keyes
 # http://jkeyes.mit-license.org/
 
-"""
-Simple wrapper for Doc Raptor API.
-"""
 import json
 import os
 import re
@@ -69,6 +67,7 @@ class DocRaptor(object):
         self._timeout = float(ENV.get(TIMEOUT, DEFAULT_TIMEOUT))
 
     def create(self, options=None):
+        """Create a new document job (sync or async)."""
         if options is None:
             raise ValueError("Please pass in an options dict")
 
@@ -101,6 +100,7 @@ class DocRaptor(object):
             return resp
 
     def list_docs(self, options=None):
+        """Return list of previously created documents."""
         if options is None:
             raise ValueError("Please pass in an options dict")
 
@@ -122,6 +122,7 @@ class DocRaptor(object):
         return resp
 
     def status(self, status_id, raise_exception_on_failure=False):
+        """Return the status of the generation job."""
         query = {"output": "json", "user_credentials": self.api_key}
 
         resp = requests.get(
@@ -145,6 +146,7 @@ class DocRaptor(object):
         return match.groups()[0]
 
     def download(self, download_key, raise_exception_on_failure=False):
+        """Download the file represented by the download_key."""
         query = {"output": "json", "user_credentials": self.api_key}
         resp = requests.get(
             "%sdownload/%s" % (self._url, download_key),
@@ -158,5 +160,6 @@ class DocRaptor(object):
 
 
 def _has_content(options):
+    """Return where the options are correctly configured."""
     content = options.get("document_content") or options.get("document_url")
     return bool(content)
