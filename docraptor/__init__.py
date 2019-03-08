@@ -135,15 +135,9 @@ class DocRaptor(object):
         if resp.status_code == 200:
             as_json = json.loads(resp.content)
             if as_json["status"] == "completed":
-                as_json["download_key"] = self._get_download_key(
-                    as_json["download_url"]
-                )
+                as_json["download_key"] = _get_download_key(as_json["download_url"])
             return as_json
         return resp
-
-    def _get_download_key(self, download_url):
-        match = re.match(".*?/download/(.+)", download_url)
-        return match.groups()[0]
 
     def download(self, download_key, raise_exception_on_failure=False):
         """Download the file represented by the download_key."""
@@ -163,3 +157,9 @@ def _has_content(options):
     """Return where the options are correctly configured."""
     content = options.get("document_content") or options.get("document_url")
     return bool(content)
+
+
+def _get_download_key(download_url):
+    """Return the key from the download_url."""
+    match = re.match(".*?/download/(.+)", download_url)
+    return match.groups()[0]

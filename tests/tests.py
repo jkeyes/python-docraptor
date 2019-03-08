@@ -10,6 +10,7 @@ from docraptor import DocumentListingFailure
 from docraptor import DocumentDownloadFailure
 from docraptor import NoApiKeyProvidedError
 from docraptor import NoContentError
+from docraptor import _get_download_key
 import requests
 from unittest import TestCase
 from nose.tools import raises
@@ -187,7 +188,7 @@ class DocRaptorStatusTest(TestCase):
         app = DocRaptor(self.test_key)
         resp = app.status("test-id")
         assert "completed" == resp["status"]
-        key = app._get_download_key(resp["download_url"])
+        key = _get_download_key(resp["download_url"])
         assert "ffffffffffd74b4a993fcae917699ed7" == key
 
 
