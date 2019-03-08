@@ -30,6 +30,7 @@ class NoContentError(KeyError):
 
 class DocRaptorRequestException(Exception):
     def __init__(self, message, status_code):
+        """Initialize the Exception with a message and status code."""
         super(DocRaptorRequestException, self).__init__(message)
         self.message = message
         self.status_code = status_code
@@ -60,6 +61,7 @@ class DocumentDownloadFailure(DocRaptorRequestException):
 
 class DocRaptor(object):
     def __init__(self, api_key=None):
+        """Initialise the DocRaptor client instance."""
         self.api_key = ENV.get(API_KEY) if api_key is None else api_key
         if not self.api_key:
             raise NoApiKeyProvidedError("No API key provided")
