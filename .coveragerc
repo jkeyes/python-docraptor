@@ -1,2 +1,6 @@
 [run]
 source=docraptor
+
+[report]
+omit =
+    */python?.?/*
