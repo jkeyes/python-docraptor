@@ -4,6 +4,8 @@ python-docraptor
 .. image:: https://travis-ci.org/jkeyes/python-docraptor.png?branch=master
     :target: https://travis-ci.org/jkeyes/python-docraptor
 
+.. image:: https://codecov.io/gh/jkeyes/python-docraptor/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/jkeyes/python-docraptor
 
 python-docraptor is an MIT Licensed wrapper for the docraptor API.
 
