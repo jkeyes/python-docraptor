@@ -1,4 +1,4 @@
-image: "python:3.7-alpine"
+image: "python:3.7"
 # Command to start on workspace startup (optional)
 tasks:
   - command: "pip install -r dev-requirements.txt"
