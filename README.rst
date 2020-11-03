@@ -7,7 +7,7 @@ python-docraptor
 .. image:: https://codecov.io/gh/jkeyes/python-docraptor/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/jkeyes/python-docraptor
 
-python-docraptor is an MIT Licensed wrapper for the docraptor API.
+python-docraptor is an MIT Licensed wrapper for the `DocRaptor API <https://docraptor.com/>`_.
 
 Synchronous Example
 -------------------
